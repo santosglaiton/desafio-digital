@@ -26,25 +26,23 @@ public class VotacaoService {
         this.pautaRepository = pautaRepository;
     }
 
-    public void verificaSeVotoJaExiste(Voto voto){
-        Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpf(voto.getCpf());
-        if(votoPorCpfEPauta.isPresent())
+    public void verificaSeVotoJaExiste(Voto voto) {
+        Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpfAndPautaId(voto.getCpf(), voto.getPauta().getId());
+        if (votoPorCpfEPauta.isPresent()) {
             throw new IllegalArgumentException("Voto ja existe");
+        }
     }
 
     public Votacao criarVotacao(Integer id, Votacao votacao){
         Optional<Pauta> findById = pautaRepository.findById(id);
         if (!findById.isPresent()){
-            throw new ObjectNotFoundException(id, "Pauta nao encontrada");
+            throw new IllegalArgumentException("Pauta ja existe");
         }
         votacao.setPauta(findById.get());
-        return salvaDataEValidade(votacao);
+        return verificaTempoVotacao(votacao);
     }
 
-    public Votacao salvaDataEValidade(Votacao votacao){
-        if (votacao.getInicioVotacao() == null){
-            votacao.setInicioVotacao(LocalDateTime.now());
-        }
+    public Votacao verificaTempoVotacao(Votacao votacao){
         if (votacao.getValidadeVotacao() == null){
             votacao.setValidadeVotacao(1L);
         }

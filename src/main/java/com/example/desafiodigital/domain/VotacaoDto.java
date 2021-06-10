@@ -5,25 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Voto implements Serializable {
+public class VotacaoDto implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private String cpf;
-
-    private Boolean votoAssociado;
-
-    @ManyToOne
     private Pauta pauta;
+    private Integer totalVotos;
+    private Integer totalSim;
+    private Integer totalNao;
 
 }

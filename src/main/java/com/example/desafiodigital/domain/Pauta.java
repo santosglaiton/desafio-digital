@@ -17,7 +17,7 @@ public class Pauta implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pautaId;
+    private Integer id;
 
     private String descricao;
 

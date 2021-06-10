@@ -20,14 +20,9 @@ public class Votacao implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private LocalDateTime inicioVotacao;
-
     private Long validadeVotacao;
 
     @ManyToOne
     private Pauta pauta;
-
-    @ManyToOne
-    private Voto voto;
 
 }

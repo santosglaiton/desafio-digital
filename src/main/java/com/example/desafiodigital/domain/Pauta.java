@@ -22,8 +22,4 @@ public class Pauta implements Serializable {
 
     private String descricao;
 
-    private Long duracao;
-
-    private Timestamp horaCadastro;
-
 }

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Votacao implements Serializable {
 
     @Id
-    private Long id;
+    private Integer id;
 
     private LocalDateTime inicioVotacao;
 

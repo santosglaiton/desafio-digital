@@ -12,6 +12,10 @@ public class PautaService {
 
     private PautaRepository pautaRepository;
 
+    public PautaService(PautaRepository pautaRepository){
+        this.pautaRepository = pautaRepository;
+    }
+
     public Pauta save(Pauta pauta){
         return pautaRepository.save(pauta);
     }

@@ -10,7 +10,6 @@ import java.util.Optional;
 @Service
 public class PautaService {
 
-    private Pauta pauta;
     private PautaRepository pautaRepository;
 
     public Pauta save(Pauta pauta){

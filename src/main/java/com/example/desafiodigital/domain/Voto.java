@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,7 +21,7 @@ public class Voto implements Serializable {
 
     private String cpf;
 
-    private String votoAssociado;
+    private Boolean votoAssociado;
 
     @ManyToOne
     private Pauta pauta;

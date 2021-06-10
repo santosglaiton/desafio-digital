@@ -29,5 +29,11 @@ public class PautaController {
         return pautaService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Pauta> findById(@PathVariable Integer id){
+        Pauta obj = pautaService.findById(id);
+        return ResponseEntity.ok().body(obj);
+    }
+
 
 }

@@ -1,5 +1,6 @@
-package com.example.desafiodigital.domain;
+package com.example.desafiodigital.dto;
 
+import com.example.desafiodigital.domain.Pauta;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

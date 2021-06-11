@@ -19,8 +19,10 @@ public class Voto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column
     private String cpf;
 
+    @Column(name = "voto_associado")
     private Boolean votoAssociado;
 
     @ManyToOne

@@ -22,6 +22,8 @@ public class Votacao implements Serializable {
 
     private Long validadeVotacao;
 
+    private LocalDateTime inicioVotacao;
+
     @ManyToOne
     private Pauta pauta;
 

@@ -26,23 +26,13 @@ public class VotacaoService {
         this.pautaRepository = pautaRepository;
     }
 
-    public void verificaSeVotoJaExiste(Voto voto) {
-        Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpfAndPautaId(voto.getCpf(), voto.getPauta().getId());
-        if (votoPorCpfEPauta.isPresent()) {
-            throw new IllegalArgumentException("Voto ja existe");
-        }
-    }
-
     public Votacao criarVotacao(Integer id, Votacao votacao){
         Optional<Pauta> findById = pautaRepository.findById(id);
         if (!findById.isPresent()){
-            throw new IllegalArgumentException("Pauta ja existe");
+            throw new IllegalArgumentException("Pauta nao existe");
         }
+        votacao.setInicioVotacao(LocalDateTime.now());
         votacao.setPauta(findById.get());
-        return verificaTempoVotacao(votacao);
-    }
-
-    public Votacao verificaTempoVotacao(Votacao votacao){
         if (votacao.getValidadeVotacao() == null){
             votacao.setValidadeVotacao(1L);
         }
@@ -59,6 +49,14 @@ public class VotacaoService {
             throw new ObjectNotFoundException(id, "Votacao nao encontrada");
         }
         return findById.get();
+    }
+
+    public Votacao findByIdAndPautaId(Integer idVotacao, Integer idPauta){
+        Optional<Votacao> findByIdAndPautaId = votacaoRepository.findByIdAndPautaId(idVotacao, idPauta);
+        if (!findByIdAndPautaId.isPresent()){
+            throw new ObjectNotFoundException(1, "Pauta ou Votacao nao encontrados");
+        }
+        return findByIdAndPautaId.get();
     }
 
 }

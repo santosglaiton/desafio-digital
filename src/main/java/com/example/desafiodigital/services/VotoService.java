@@ -2,11 +2,14 @@ package com.example.desafiodigital.services;
 
 import com.example.desafiodigital.domain.Pauta;
 import com.example.desafiodigital.domain.Votacao;
-import com.example.desafiodigital.domain.VotacaoDto;
+import com.example.desafiodigital.dto.VotacaoDto;
 import com.example.desafiodigital.domain.Voto;
+import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,30 +19,39 @@ public class VotoService {
 
     private VotoRepository votoRepository;
     private VotacaoService votacaoService;
+    private VotacaoRepository votacaoRepository;
 
-    public VotoService(VotoRepository votoRepository, VotacaoService votacaoService){
+    public VotoService(VotoRepository votoRepository, VotacaoService votacaoService, VotacaoRepository votacaoRepository){
         this.votoRepository = votoRepository;
         this.votacaoService = votacaoService;
+        this.votacaoRepository = votacaoRepository;
     }
 
-    //public void verificaTempoDeVotacao(Votacao votacao, Voto voto) throws Exception {
-      //  LocalDateTime dataLimiteVotacao = votacao.getValidadeVotacao();
-        //if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.getValidadeVotacao()))){
-          //  throw new Exception("Data limite excedida");
-        //}
-    //}
-
-
-    public void verificaTempoDeVotacao(Votacao votacao, Voto voto) throws Exception{
-        LocalDateTime dataInicio = LocalDateTime.now();
-        if(dataInicio.plusMinutes(votacao.getValidadeVotacao()).isAfter(LocalDateTime.now())){
-            throw new Exception("Horario de votacao excedido");
+    public void verificaTempoDeVotacao(Integer idVotacao, Voto voto) throws Exception {
+        Votacao votacao = votacaoRepository.findById(idVotacao).get();
+        LocalDateTime dataLimiteVotacao = votacao.getInicioVotacao();
+        if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.getValidadeVotacao()))){
+            throw new Exception("Data limite excedida");
         }
     }
 
-    public Voto save(Votacao votacao, Voto voto) throws Exception {
-        verificaTempoDeVotacao(votacao, voto);
+
+    public Voto save(Integer idVotacao, Integer idPauta, Voto voto) {
+        try {
+            Votacao votacao = votacaoService.findByIdAndPautaId(idVotacao, idPauta);
+            voto.setPauta(votacao.getPauta());
+            verificaTempoDeVotacao(idVotacao, voto);
+            verificaSeVotoJaExiste(voto);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return votoRepository.save(voto);
+    }
+    public void verificaSeVotoJaExiste(Voto voto) {
+        Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpfAndPautaId(voto.getCpf(), voto.getPauta().getId());
+        if (votoPorCpfEPauta.isPresent()) {
+            throw new IllegalArgumentException("Voto ja existe");
+        }
     }
 
     public VotacaoDto contadorVotos(Integer id){

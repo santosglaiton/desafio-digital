@@ -27,7 +27,6 @@ public class PautaService {
     public Pauta findById(Integer id){
         Optional<Pauta> findById = pautaRepository.findById(id);
         return findById.get();
-
     }
 
 }

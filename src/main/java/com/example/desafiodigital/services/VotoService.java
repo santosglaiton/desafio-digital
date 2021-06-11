@@ -6,7 +6,6 @@ import com.example.desafiodigital.dto.VotacaoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,7 +26,7 @@ public class VotoService {
         this.votacaoRepository = votacaoRepository;
     }
 
-    public void verificaTempoDeVotacao(Integer idVotacao, Voto voto) throws Exception {
+    public void verificaTempoDeVotacao(Integer idVotacao) throws Exception {
         Votacao votacao = votacaoRepository.findById(idVotacao).get();
         LocalDateTime dataLimiteVotacao = votacao.getInicioVotacao();
         if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.getValidadeVotacao()))){
@@ -40,7 +39,7 @@ public class VotoService {
         try {
             Votacao votacao = votacaoService.findByIdAndPautaId(idVotacao, idPauta);
             voto.setPauta(votacao.getPauta());
-            verificaTempoDeVotacao(idVotacao, voto);
+            verificaTempoDeVotacao(idVotacao);
             verificaSeVotoJaExiste(voto);
         }catch (Exception e){
             e.printStackTrace();

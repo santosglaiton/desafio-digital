@@ -6,7 +6,8 @@ import com.example.desafiodigital.services.VotoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/voto")
+@RestController()
+@RequestMapping("/voto")
 public class VotoController {
 
     private VotoService votoService;
@@ -15,19 +16,15 @@ public class VotoController {
         this.votoService = votoService;
     }
 
-    @PostMapping("/pautas/{idPauta}/votacao/{idVotacao/voto}")
+    @PostMapping("/pautas/{idPauta}/votacao/{idVotacao}/voto")
     public Voto voto(@PathVariable Integer idPauta, @PathVariable Integer idVotacao, @RequestBody Voto voto) throws Exception {
         return votoService.save(idPauta, idVotacao, voto);
     }
 
-    //@GetMapping("/{id}")
-    //public VotacaoDto resultadoVotacao(@PathVariable Integer id){
-      //  return votoService.getResultadoVotacao(id);
-    //}
-
     @GetMapping("/{id}")
     public ResponseEntity<VotacaoDto> resultadoVotacao(@PathVariable Integer id){
-        return ResponseEntity.ok().body(votoService.getResultadoVotacao(id));
+        VotacaoDto obj = votoService.getResultadoVotacao(id);
+        return ResponseEntity.ok().body(obj);
     }
 
 }

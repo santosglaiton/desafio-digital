@@ -17,7 +17,7 @@ public class VotoController {
     }
 
     @PostMapping("/pautas/{idPauta}/votacao/{idVotacao}/voto")
-    public Voto voto(@PathVariable Integer idPauta, @PathVariable Integer idVotacao, @RequestBody Voto voto) throws Exception {
+    public Voto voto(@PathVariable Integer idPauta, @PathVariable Integer idVotacao, @RequestBody Voto voto) {
         return votoService.save(idPauta, idVotacao, voto);
     }
 

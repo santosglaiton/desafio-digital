@@ -10,7 +10,6 @@ import com.example.desafiodigital.services.exception.PautaNaoEncontradaException
 import com.example.desafiodigital.services.exception.SessaoExpiradaException;
 import com.example.desafiodigital.services.exception.VotacaoNaoEncontradaException;
 import com.example.desafiodigital.services.exception.VotoJaExisteException;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,10 +30,14 @@ public class VotoService {
     }
 
     public void verificaTempoDeVotacao(Integer idVotacao){
-        Votacao votacao = votacaoRepository.findById(idVotacao).get();
-        LocalDateTime dataLimiteVotacao = votacao.getInicioVotacao();
-        if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.getValidadeVotacao()))){
-            throw new SessaoExpiradaException();
+        Optional<Votacao> votacao = votacaoRepository.findById(idVotacao);
+        if (votacao.isPresent()) {
+            LocalDateTime dataLimiteVotacao = votacao.get().getInicioVotacao();
+            if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.get().getValidadeVotacao()))) {
+                throw new SessaoExpiradaException();
+            }
+        }else{
+            throw new VotacaoNaoEncontradaException();
         }
     }
 
@@ -62,13 +65,16 @@ public class VotoService {
         }
     }
 
-    public VotacaoDto contadorVotos(Integer id){
+    public VotacaoDto contadorVotos(Integer id) {
         Optional<List<Voto>> votosPorPauta = votoRepository.findByPautaId(id);
-        Pauta pauta = votosPorPauta.get().iterator().next().getPauta();
-        Integer total = votosPorPauta.get().size();
-        Integer totalSim = (int) votosPorPauta.get().stream().filter(voto -> Boolean.TRUE.equals(voto.getVotoAssociado())).count();
-        Integer totalNao = total - totalSim;
-        return VotacaoDto.builder().pauta(pauta).totalVotos(total).totalSim(totalSim).totalNao(totalNao).build();
+        if (votosPorPauta.isPresent()) {
+            Pauta pauta = votosPorPauta.get().iterator().next().getPauta();
+            Integer total = votosPorPauta.get().size();
+            Integer totalSim = (int) votosPorPauta.get().stream().filter(voto -> Boolean.TRUE.equals(voto.getVotoAssociado())).count();
+            Integer totalNao = total - totalSim;
+            return VotacaoDto.builder().pauta(pauta).totalVotos(total).totalSim(totalSim).totalNao(totalNao).build();
+        }
+        throw new VotacaoNaoEncontradaException();
     }
 
     public VotacaoDto getResultadoVotacao(Integer id){

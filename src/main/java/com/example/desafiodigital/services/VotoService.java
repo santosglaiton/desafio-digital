@@ -6,9 +6,13 @@ import com.example.desafiodigital.dto.VotacaoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
+import com.example.desafiodigital.services.exception.PautaNaoEncontradaException;
+import com.example.desafiodigital.services.exception.SessaoExpiradaException;
+import com.example.desafiodigital.services.exception.VotacaoNaoEncontradaException;
+import com.example.desafiodigital.services.exception.VotoJaExisteException;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,30 +30,35 @@ public class VotoService {
         this.votacaoRepository = votacaoRepository;
     }
 
-    public void verificaTempoDeVotacao(Integer idVotacao) throws Exception {
+    public void verificaTempoDeVotacao(Integer idVotacao){
         Votacao votacao = votacaoRepository.findById(idVotacao).get();
         LocalDateTime dataLimiteVotacao = votacao.getInicioVotacao();
         if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.getValidadeVotacao()))){
-            throw new Exception("Data limite excedida");
+            throw new SessaoExpiradaException();
         }
     }
 
 
     public Voto save(Integer idVotacao, Integer idPauta, Voto voto) {
-        try {
-            Votacao votacao = votacaoService.findByIdAndPautaId(idVotacao, idPauta);
-            voto.setPauta(votacao.getPauta());
-            verificaTempoDeVotacao(idVotacao);
-            verificaSeVotoJaExiste(voto);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return votoRepository.save(voto);
+            Votacao votacao = votacaoService.findById(idVotacao);
+            if (votacao.getId() == null){
+                throw new VotacaoNaoEncontradaException();
+            }else {
+                voto.setPauta(votacao.getPauta());
+                if (voto.getPauta().getId() == null) {
+                    throw new PautaNaoEncontradaException();
+                }else {
+                    votacaoService.findByIdAndPautaId(idVotacao, idPauta);
+                    verificaTempoDeVotacao(idVotacao);
+                    verificaSeVotoJaExiste(voto);
+                    return votoRepository.save(voto);
+                }
+            }
     }
     public void verificaSeVotoJaExiste(Voto voto) {
         Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpfAndPautaId(voto.getCpf(), voto.getPauta().getId());
-        if (votoPorCpfEPauta.isPresent()) {
-            throw new IllegalArgumentException("Voto ja existe");
+        if (votoPorCpfEPauta.isPresent()){
+            throw new VotoJaExisteException();
         }
     }
 

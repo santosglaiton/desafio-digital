@@ -6,6 +6,7 @@ import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.PautaRepository;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
+import com.example.desafiodigital.services.exception.PautaNaoEncontradaException;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +30,15 @@ public class VotacaoService {
     public Votacao criarVotacao(Integer id, Votacao votacao){
         Optional<Pauta> findById = pautaRepository.findById(id);
         if (!findById.isPresent()){
-            throw new IllegalArgumentException("Pauta nao existe");
+            throw new PautaNaoEncontradaException();
+        }else {
+            votacao.setInicioVotacao(LocalDateTime.now());
+            votacao.setPauta(findById.get());
+            if (votacao.getValidadeVotacao() == null) {
+                votacao.setValidadeVotacao(1L);
+            }
+            return votacaoRepository.save(votacao);
         }
-        votacao.setInicioVotacao(LocalDateTime.now());
-        votacao.setPauta(findById.get());
-        if (votacao.getValidadeVotacao() == null){
-            votacao.setValidadeVotacao(1L);
-        }
-        return votacaoRepository.save(votacao);
     }
 
     public List<Voto> findAll(){

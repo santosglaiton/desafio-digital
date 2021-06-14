@@ -6,9 +6,7 @@ import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.PautaRepository;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
-import com.example.desafiodigital.services.exception.PautaNaoEncontradaException;
-import com.example.desafiodigital.services.exception.PautaOuVotacaoNotFoundException;
-import com.example.desafiodigital.services.exception.VotacaoNaoEncontradaException;
+import com.example.desafiodigital.services.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,7 +29,7 @@ public class VotacaoService {
     public Votacao criarVotacao(Integer id, Votacao votacao){
         Optional<Pauta> findById = pautaRepository.findById(id);
         if (!findById.isPresent()){
-            throw new PautaNaoEncontradaException();
+            throw new ObjectNotFoundException("Pauta nao encontrada");
         }else {
             votacao.setInicioVotacao(LocalDateTime.now());
             votacao.setPauta(findById.get());
@@ -49,15 +47,15 @@ public class VotacaoService {
     public Votacao findById(Integer id){
         Optional<Votacao> findById = votacaoRepository.findById(id);
         if (!findById.isPresent()){
-            throw new VotacaoNaoEncontradaException();
+            throw new ObjectNotFoundException("Votacao nao encontrada");
         }
         return findById.get();
     }
 
-    public Votacao findByIdAndPautaId(Integer idVotacao, Integer idPauta) throws PautaOuVotacaoNotFoundException{
+    public Votacao findByIdAndPautaId(Integer idVotacao, Integer idPauta){
         Optional<Votacao> findByIdAndPautaId = votacaoRepository.findByIdAndPautaId(idVotacao, idPauta);
         if (!findByIdAndPautaId.isPresent()){
-            throw new PautaOuVotacaoNotFoundException();
+            throw new ObjectNotFoundException("Pauta ou Votacao nao encontrados");
         }
         return findByIdAndPautaId.get();
     }

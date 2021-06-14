@@ -6,10 +6,7 @@ import com.example.desafiodigital.dto.VotacaoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
-import com.example.desafiodigital.services.exception.PautaNaoEncontradaException;
-import com.example.desafiodigital.services.exception.SessaoExpiradaException;
-import com.example.desafiodigital.services.exception.VotacaoNaoEncontradaException;
-import com.example.desafiodigital.services.exception.VotoJaExisteException;
+import com.example.desafiodigital.services.exception.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,10 +31,10 @@ public class VotoService {
         if (votacao.isPresent()) {
             LocalDateTime dataLimiteVotacao = votacao.get().getInicioVotacao();
             if (LocalDateTime.now().isAfter(dataLimiteVotacao.plusMinutes(votacao.get().getValidadeVotacao()))) {
-                throw new SessaoExpiradaException();
+                throw new SessaoExpiradaException("Sessao encerrada");
             }
         }else{
-            throw new VotacaoNaoEncontradaException();
+            throw new ObjectNotFoundException("Votacao nao encontrada");
         }
     }
 
@@ -45,11 +42,11 @@ public class VotoService {
     public Voto save(Integer idVotacao, Integer idPauta, Voto voto) {
             Votacao votacao = votacaoService.findById(idVotacao);
             if (votacao.getId() == null){
-                throw new VotacaoNaoEncontradaException();
+                throw new ObjectNotFoundException("Votacao nao encontrada");
             }else {
                 voto.setPauta(votacao.getPauta());
                 if (voto.getPauta().getId() == null) {
-                    throw new PautaNaoEncontradaException();
+                    throw new ObjectNotFoundException("Pauta nao encontrada");
                 }else {
                     votacaoService.findByIdAndPautaId(idVotacao, idPauta);
                     verificaTempoDeVotacao(idVotacao);
@@ -61,7 +58,7 @@ public class VotoService {
     public void verificaSeVotoJaExiste(Voto voto) {
         Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpfAndPautaId(voto.getCpf(), voto.getPauta().getId());
         if (votoPorCpfEPauta.isPresent()){
-            throw new VotoJaExisteException();
+            throw new VotoJaExisteException("Voto ja existe para este CPF nesta pauta");
         }
     }
 
@@ -74,7 +71,7 @@ public class VotoService {
             Integer totalNao = total - totalSim;
             return VotacaoDto.builder().pauta(pauta).totalVotos(total).totalSim(totalSim).totalNao(totalNao).build();
         }
-        throw new VotacaoNaoEncontradaException();
+        throw new ObjectNotFoundException("Pauta nao encontrada");
     }
 
     public VotacaoDto getResultadoVotacao(Integer id){

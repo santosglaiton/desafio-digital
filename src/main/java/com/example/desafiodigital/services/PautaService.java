@@ -2,7 +2,7 @@ package com.example.desafiodigital.services;
 
 import com.example.desafiodigital.domain.Pauta;
 import com.example.desafiodigital.repositories.PautaRepository;
-import com.example.desafiodigital.services.exception.PautaNaoEncontradaException;
+import com.example.desafiodigital.services.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class PautaService {
     public Pauta findById(Integer id) {
         Optional<Pauta> findById = pautaRepository.findById(id);
         if (!findById.isPresent()) {
-            throw new PautaNaoEncontradaException();
+            throw new ObjectNotFoundException("Pauta nao encontrada");
         }
         return findById.get();
     }

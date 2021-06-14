@@ -6,6 +6,7 @@ import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
 import com.example.desafiodigital.services.exception.*;
+import com.example.desafiodigital.services.utils.ValidaCpf;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,10 +48,14 @@ public class VotoService {
                 if (voto.getPauta().getId() == null) {
                     throw new ObjectNotFoundException("Pauta nao encontrada");
                 }else {
-                    votacaoService.findByIdAndPautaId(idVotacao, idPauta);
-                    verificaTempoDeVotacao(idVotacao);
-                    verificaSeVotoJaExiste(voto);
-                    return votoRepository.save(voto);
+                    if (ValidaCpf.isValidCPF(voto.getCpf()) == false) {
+                        throw new CpfInvalidoException("CPF invalido");
+                    } else {
+                        votacaoService.findByIdAndPautaId(idVotacao, idPauta);
+                        verificaTempoDeVotacao(idVotacao);
+                        verificaSeVotoJaExiste(voto);
+                        return votoRepository.save(voto);
+                    }
                 }
             }
     }

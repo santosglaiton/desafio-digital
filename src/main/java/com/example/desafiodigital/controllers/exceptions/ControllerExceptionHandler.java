@@ -1,5 +1,6 @@
 package com.example.desafiodigital.controllers.exceptions;
 
+import com.example.desafiodigital.services.exception.CpfInvalidoException;
 import com.example.desafiodigital.services.exception.ObjectNotFoundException;
 import com.example.desafiodigital.services.exception.SessaoExpiradaException;
 import com.example.desafiodigital.services.exception.VotoJaExisteException;
@@ -30,6 +31,12 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> votoJaExiste(VotoJaExisteException e, HttpServletRequest request){
         var error = new StandardError(LocalDateTime.now(), HttpStatus.FORBIDDEN.value(), "Voto already exists", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(CpfInvalidoException.class)
+    public ResponseEntity<StandardError> cpfComTamanhoInvalido(CpfInvalidoException e, HttpServletRequest request){
+        var error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "CPF deve conter 11 digitos", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
 }

@@ -28,4 +28,9 @@ public class Voto implements Serializable {
     @ManyToOne
     private Pauta pauta;
 
+    public Voto(String cpf, Boolean votoAssociado){
+        this.cpf = cpf;
+        this.votoAssociado = votoAssociado;
+    }
+
 }

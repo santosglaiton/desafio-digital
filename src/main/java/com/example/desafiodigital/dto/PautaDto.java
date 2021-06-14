@@ -1,7 +1,6 @@
 package com.example.desafiodigital.dto;
 
 import com.example.desafiodigital.domain.Pauta;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

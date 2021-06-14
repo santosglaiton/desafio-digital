@@ -1,12 +1,19 @@
 package com.example.desafiodigital.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.example.desafiodigital.domain.Votacao;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
+@Data
+@NoArgsConstructor
 public class VotacaoDto implements Serializable {
 
     private Long validadeVotacao;
 
-    private LocalDateTime inicioVotacao;
+    public Votacao transformaParaEntity(){
+        return new Votacao(validadeVotacao);
+    }
 
 }

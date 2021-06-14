@@ -27,4 +27,8 @@ public class Votacao implements Serializable {
     @ManyToOne
     private Pauta pauta;
 
+    public Votacao(Long validadeVotacao){
+        this.validadeVotacao = validadeVotacao;
+    }
+
 }

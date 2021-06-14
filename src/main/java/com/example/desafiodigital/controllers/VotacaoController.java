@@ -1,6 +1,7 @@
 package com.example.desafiodigital.controllers;
 
 import com.example.desafiodigital.domain.Votacao;
+import com.example.desafiodigital.dto.VotacaoDto;
 import com.example.desafiodigital.services.VotacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ public class VotacaoController {
     }
 
     @PostMapping("/pauta/{id}/votacao")
-    public ResponseEntity<Votacao> criaVotacao (@PathVariable Integer id, @RequestBody Votacao votacao){
-        return ResponseEntity.ok().body(votacaoService.criarVotacao(id,votacao));
+    public ResponseEntity<Votacao> criaVotacao (@PathVariable Integer id, @RequestBody VotacaoDto votacaoDto){
+        return ResponseEntity.ok().body(votacaoService.criarVotacao(id,votacaoDto.transformaParaEntity()));
     }
 
 }

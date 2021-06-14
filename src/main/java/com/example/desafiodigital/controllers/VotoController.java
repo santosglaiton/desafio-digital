@@ -3,6 +3,7 @@ package com.example.desafiodigital.controllers;
 import com.example.desafiodigital.dto.VotacaoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.services.VotoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/voto")
 public class VotoController {
 
+    @Autowired
     private VotoService votoService;
 
     public VotoController(VotoService votoService){

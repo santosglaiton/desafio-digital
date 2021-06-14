@@ -2,6 +2,7 @@ package com.example.desafiodigital.controllers;
 
 import com.example.desafiodigital.domain.Pauta;
 import com.example.desafiodigital.services.PautaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/pauta")
 public class PautaController {
 
+    @Autowired
     private final PautaService pautaService;
 
     public PautaController(PautaService pautaService) {

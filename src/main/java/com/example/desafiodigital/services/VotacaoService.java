@@ -7,7 +7,8 @@ import com.example.desafiodigital.repositories.PautaRepository;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
 import com.example.desafiodigital.services.exception.PautaNaoEncontradaException;
-import org.hibernate.ObjectNotFoundException;
+import com.example.desafiodigital.services.exception.PautaOuVotacaoNotFoundException;
+import com.example.desafiodigital.services.exception.VotacaoNaoEncontradaException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,15 +49,15 @@ public class VotacaoService {
     public Votacao findById(Integer id){
         Optional<Votacao> findById = votacaoRepository.findById(id);
         if (!findById.isPresent()){
-            throw new ObjectNotFoundException(id, "Votacao nao encontrada");
+            throw new VotacaoNaoEncontradaException();
         }
         return findById.get();
     }
 
-    public Votacao findByIdAndPautaId(Integer idVotacao, Integer idPauta){
+    public Votacao findByIdAndPautaId(Integer idVotacao, Integer idPauta) throws PautaOuVotacaoNotFoundException{
         Optional<Votacao> findByIdAndPautaId = votacaoRepository.findByIdAndPautaId(idVotacao, idPauta);
         if (!findByIdAndPautaId.isPresent()){
-            throw new ObjectNotFoundException(1, "Pauta ou Votacao nao encontrados");
+            throw new PautaOuVotacaoNotFoundException();
         }
         return findByIdAndPautaId.get();
     }

@@ -1,6 +1,7 @@
 package com.example.desafiodigital.controllers;
 
 import com.example.desafiodigital.domain.Pauta;
+import com.example.desafiodigital.dto.PautaDto;
 import com.example.desafiodigital.services.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,8 @@ public class PautaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> insert(@RequestBody Pauta pauta){
-        pautaService.save(pauta);
+    public ResponseEntity<Void> insert(@RequestBody PautaDto pautaDto){
+        pautaService.save(pautaDto.transformaParaEntity());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -33,7 +34,7 @@ public class PautaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Pauta> findById(@PathVariable Integer id){
-        Pauta obj = pautaService.findById(id);
+        var obj = pautaService.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 

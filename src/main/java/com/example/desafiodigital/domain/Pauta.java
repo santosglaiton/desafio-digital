@@ -21,4 +21,8 @@ public class Pauta implements Serializable {
 
     private String descricao;
 
+    public Pauta(String descricao){
+        this.descricao = descricao;
+    }
+
 }

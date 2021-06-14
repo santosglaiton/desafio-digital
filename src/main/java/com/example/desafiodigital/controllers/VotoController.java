@@ -1,6 +1,6 @@
 package com.example.desafiodigital.controllers;
 
-import com.example.desafiodigital.dto.VotacaoDto;
+import com.example.desafiodigital.dto.ResultadoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.services.VotoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,8 @@ public class VotoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VotacaoDto> resultadoVotacao(@PathVariable Integer id){
-        VotacaoDto obj = votoService.getResultadoVotacao(id);
+    public ResponseEntity<ResultadoDto> resultadoVotacao(@PathVariable Integer id){
+        ResultadoDto obj = votoService.getResultadoVotacao(id);
         return ResponseEntity.ok().body(obj);
     }
 

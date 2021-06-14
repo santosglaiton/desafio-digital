@@ -1,22 +1,12 @@
 package com.example.desafiodigital.dto;
 
-import com.example.desafiodigital.domain.Pauta;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class VotacaoDto implements Serializable {
 
-    private Pauta pauta;
-    private Integer totalVotos;
-    private Integer totalSim;
-    private Integer totalNao;
+    private Long validadeVotacao;
+
+    private LocalDateTime inicioVotacao;
 
 }

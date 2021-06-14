@@ -1,6 +1,5 @@
 package com.example.desafiodigital.services.exception;
 
-import org.springframework.http.HttpStatus;
 
 public class VotoJaExisteException extends RuntimeException{
 

@@ -1,8 +1,7 @@
 package com.example.desafiodigital.services;
 
-import com.example.desafiodigital.domain.Pauta;
 import com.example.desafiodigital.domain.Votacao;
-import com.example.desafiodigital.dto.VotacaoDto;
+import com.example.desafiodigital.dto.ResultadoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
@@ -40,7 +39,7 @@ public class VotoService {
 
 
     public Voto save(Integer idVotacao, Integer idPauta, Voto voto) {
-            Votacao votacao = votacaoService.findById(idVotacao);
+            var votacao = votacaoService.findById(idVotacao);
             if (votacao.getId() == null){
                 throw new ObjectNotFoundException("Votacao nao encontrada");
             }else {
@@ -62,20 +61,20 @@ public class VotoService {
         }
     }
 
-    public VotacaoDto contadorVotos(Integer id) {
+    public ResultadoDto contadorVotos(Integer id) {
         Optional<List<Voto>> votosPorPauta = votoRepository.findByPautaId(id);
         if (votosPorPauta.isPresent()) {
-            Pauta pauta = votosPorPauta.get().iterator().next().getPauta();
+            var pauta = votosPorPauta.get().iterator().next().getPauta();
             Integer total = votosPorPauta.get().size();
             Integer totalSim = (int) votosPorPauta.get().stream().filter(voto -> Boolean.TRUE.equals(voto.getVotoAssociado())).count();
             Integer totalNao = total - totalSim;
-            return VotacaoDto.builder().pauta(pauta).totalVotos(total).totalSim(totalSim).totalNao(totalNao).build();
+            return ResultadoDto.builder().pauta(pauta).totalVotos(total).totalSim(totalSim).totalNao(totalNao).build();
         }
         throw new ObjectNotFoundException("Pauta nao encontrada");
     }
 
-    public VotacaoDto getResultadoVotacao(Integer id){
-        VotacaoDto votacaoDto = contadorVotos(id);
+    public ResultadoDto getResultadoVotacao(Integer id){
+        var votacaoDto = contadorVotos(id);
         return votacaoDto;
     }
 

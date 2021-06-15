@@ -1,6 +1,7 @@
 package com.example.desafiodigital.controllers.exceptions;
 
 import com.example.desafiodigital.services.exception.CpfInvalidoException;
+import com.example.desafiodigital.services.exception.IllegalArgumentException;
 import com.example.desafiodigital.services.exception.ObjectNotFoundException;
 import com.example.desafiodigital.services.exception.SessaoExpiradaException;
 import com.example.desafiodigital.services.exception.VotoJaExisteException;
@@ -37,6 +38,12 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> cpfComTamanhoInvalido(CpfInvalidoException e, HttpServletRequest request){
         var error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "CPF deve conter 11 digitos", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StandardError> campoInvalido(IllegalArgumentException e, HttpServletRequest request){
+        var error = new StandardError(LocalDateTime.now(), HttpStatus.NO_CONTENT.value(), "O campo deve ser preenchido", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(error);
     }
 
 }

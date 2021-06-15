@@ -6,6 +6,7 @@ import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
 import com.example.desafiodigital.services.exception.*;
+import com.example.desafiodigital.services.exception.IllegalArgumentException;
 import com.example.desafiodigital.services.utils.ValidaCpf;
 import org.springframework.stereotype.Service;
 
@@ -51,10 +52,14 @@ public class VotoService {
                     if (ValidaCpf.isValidCPF(voto.getCpf()) == false) {
                         throw new CpfInvalidoException("CPF invalido");
                     } else {
-                        votacaoService.findByIdAndPautaId(idVotacao, idPauta);
-                        verificaTempoDeVotacao(idVotacao);
-                        verificaSeVotoJaExiste(voto);
-                        return votoRepository.save(voto);
+                        if (voto.getVotoAssociado() == null){
+                            throw new IllegalArgumentException("Voto nao pode ser nulo");
+                        } else {
+                            votacaoService.findByIdAndPautaId(idVotacao, idPauta);
+                            verificaTempoDeVotacao(idVotacao);
+                            verificaSeVotoJaExiste(voto);
+                            return votoRepository.save(voto);
+                        }
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.example.desafiodigital.services;
 
 import com.example.desafiodigital.domain.Pauta;
 import com.example.desafiodigital.repositories.PautaRepository;
+import com.example.desafiodigital.services.exception.IllegalArgumentException;
 import com.example.desafiodigital.services.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,10 @@ public class PautaService {
     }
 
     public Pauta save(Pauta pauta){
-        return pautaRepository.save(pauta);
+        if (pauta.getDescricao() != null){
+            return pautaRepository.save(pauta);
+        }
+        throw new IllegalArgumentException("O campo descricao deve ser preenchido");
     }
 
     public List<Pauta> findAll(){

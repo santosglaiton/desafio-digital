@@ -9,7 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +38,17 @@ public class PautaServiceTest {
     public void testaSalvarSemDescricao(){
         Pauta pauta = new Pauta();
         pautaService.save(pauta);
+    }
+
+    @Test
+    public void testaFindById(){
+        Pauta pauta = new Pauta();
+        pauta.setId(1);
+        pauta.setDescricao("teste");
+        pautaService.save(pauta);
+        Mockito.when(pautaRepository.findById(1)).thenReturn(Optional.of(pauta));
+        pautaService.findById(1);
+        verify(pautaRepository, times(1)).findById(pauta.getId());
     }
 
 }

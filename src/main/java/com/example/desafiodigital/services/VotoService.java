@@ -5,6 +5,7 @@ import com.example.desafiodigital.dto.ResultadoDto;
 import com.example.desafiodigital.domain.Voto;
 import com.example.desafiodigital.repositories.VotacaoRepository;
 import com.example.desafiodigital.repositories.VotoRepository;
+import com.example.desafiodigital.services.integracaoCpfService.IntegracaoCpfService;
 import com.example.desafiodigital.services.exception.*;
 import com.example.desafiodigital.services.exception.IllegalArgumentException;
 import com.example.desafiodigital.services.utils.ValidaCpf;
@@ -20,11 +21,13 @@ public class VotoService {
     private VotoRepository votoRepository;
     private VotacaoService votacaoService;
     private VotacaoRepository votacaoRepository;
+    private IntegracaoCpfService integracaoCpfService;
 
-    public VotoService(VotoRepository votoRepository, VotacaoService votacaoService, VotacaoRepository votacaoRepository){
+    public VotoService(IntegracaoCpfService integracaoCpfService, VotoRepository votoRepository, VotacaoService votacaoService, VotacaoRepository votacaoRepository){
         this.votoRepository = votoRepository;
         this.votacaoService = votacaoService;
         this.votacaoRepository = votacaoRepository;
+        this.integracaoCpfService = integracaoCpfService;
     }
 
     public void verificaTempoDeVotacao(Integer idVotacao){
@@ -41,18 +44,21 @@ public class VotoService {
 
 
     public Voto save(Integer idVotacao, Integer idPauta, Voto voto) {
-            var votacao = votacaoService.findById(idVotacao);
-            if (votacao.getId() == null){
-                throw new ObjectNotFoundException("Votacao nao encontrada");
-            }else {
-                voto.setPauta(votacao.getPauta());
-                if (voto.getPauta().getId() == null) {
-                    throw new ObjectNotFoundException("Pauta nao encontrada");
-                }else {
-                    if (ValidaCpf.isValidCPF(voto.getCpf()) == false) {
-                        throw new CpfInvalidoException("CPF invalido");
+        var votacao = votacaoService.findById(idVotacao);
+        if (votacao.getId() == null) {
+            throw new ObjectNotFoundException("Votacao nao encontrada");
+        } else {
+            voto.setPauta(votacao.getPauta());
+            if (voto.getPauta().getId() == null) {
+                throw new ObjectNotFoundException("Pauta nao encontrada");
+            } else {
+                if (voto.getCpf().length() != 11) {
+                    throw new CpfInvalidoException("CPF invalido");
+                } else {
+                    if (integracaoCpfService.validaCpfPodeVotar(voto.getCpf()).equals("UNABLE_TO_VOTE")) {
+                        throw new ApiIntegracaoException("CPF nao pode votar");
                     } else {
-                        if (voto.getVotoAssociado() == null){
+                        if (voto.getVotoAssociado() == null) {
                             throw new IllegalArgumentException("Voto nao pode ser nulo");
                         } else {
                             votacaoService.findByIdAndPautaId(idVotacao, idPauta);
@@ -63,6 +69,7 @@ public class VotoService {
                     }
                 }
             }
+        }
     }
     public void verificaSeVotoJaExiste(Voto voto) {
         Optional<Voto> votoPorCpfEPauta = votoRepository.findByCpfAndPautaId(voto.getCpf(), voto.getPauta().getId());

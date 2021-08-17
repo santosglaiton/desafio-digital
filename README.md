@@ -1,4 +1,4 @@
-# desafio-digital
+# Projeto-Digital / Sistema de votação para associado
 
 Tecnologias Utilizadas: MySQL, Spring Boot, Lombok, Swagger, Spring Starter JPA
 
